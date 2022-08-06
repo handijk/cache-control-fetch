@@ -13,6 +13,8 @@ describe('parseCacheControlHeader', () => {
     });
   });
   test('returns an empty object with a falsy input', () => {
-    expect(parseCacheControlHeaderModule.parseCacheControlHeader()).toEqual({});
+    expect(parseCacheControlHeaderModule.parseCacheControlHeader(null)).toEqual(
+      {}
+    );
   });
 });

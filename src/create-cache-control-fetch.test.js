@@ -14,6 +14,19 @@ describe('createCacheControlFetch', () => {
     'parseCacheControlHeader'
   );
 
+  test('when one of the calls returns public it will generate a public header', async () => {
+    const { fetch, getCacheControlHeader } = createCacheControlFetch({
+      fetch: mockedFetch,
+    });
+
+    parseCacheControlHeaderSpy.mockReturnValueOnce({});
+    await fetch('mock-url');
+    parseCacheControlHeaderSpy.mockReturnValueOnce({ public: true });
+    await fetch('mock-url');
+
+    expect(getCacheControlHeader()).toEqual('public');
+  });
+
   test('when one of the calls returns private it will generate a private header', async () => {
     const { fetch, getCacheControlHeader } = createCacheControlFetch({
       fetch: mockedFetch,
@@ -37,7 +50,7 @@ describe('createCacheControlFetch', () => {
     parseCacheControlHeaderSpy.mockReturnValueOnce({});
     await fetch('mock-url');
 
-    expect(getCacheControlHeader()).toEqual('public, no-cache');
+    expect(getCacheControlHeader()).toEqual('no-cache');
   });
 
   test('when one of the calls returns no-store it will generate a no-store header', async () => {
@@ -63,6 +76,6 @@ describe('createCacheControlFetch', () => {
     parseCacheControlHeaderSpy.mockReturnValueOnce({ 'max-age': 2 });
     await fetch('mock-url');
 
-    expect(getCacheControlHeader()).toEqual('public, max-age=1');
+    expect(getCacheControlHeader()).toEqual('max-age=1');
   });
 });
